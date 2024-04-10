@@ -1,36 +1,20 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import { Auth } from 'aws-amplify';
+import { ApolloProvider } from '@apollo/client';
 
-import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
+import awsConfig from '../aws-exports';
 
-const client = new ApolloClient({
-  uri: 'https://flyby-router-demo.herokuapp.com/',
-  cache: new InMemoryCache(),
+import { client } from './apollo.config';
+
+Auth.configure(awsConfig);
+
+client.then(clientResponse => {
+  const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+  root.render(
+    <ApolloProvider client={clientResponse}>
+      <App />
+    </ApolloProvider>
+  );
 });
-
-// const client = ...
-
-client
-  .query({
-    query: gql`
-      query GetLocations {
-        locations {
-          id
-          name
-          description
-          photo
-        }
-      }
-    `,
-  })
-  .then((result) => console.log(result));
-
-const root = ReactDOM.createRoot(document.getElementById('root')!);
-
-
-root.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-);

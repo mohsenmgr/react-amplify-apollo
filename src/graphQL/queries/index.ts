@@ -2,13 +2,15 @@ import gql from 'graphql-tag';
 
 
 
-export const GET_LOCATIONS = gql`
-  query GetLocations {
-    locations {
+export const GET_TODOS = gql`
+  query ListTodos {
+   listTodos{
+     items {
       id
-      name
+      title
       description
       photo
+     }
     }
   }
 `;
