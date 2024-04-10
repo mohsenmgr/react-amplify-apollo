@@ -1,33 +1,44 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 
 
 import { GET_TODOS } from '../graphQL/queries'
-import { Key } from 'react';
+import { Key, useEffect, useState } from 'react';
 
 
-interface Location {
+interface Todo {
     id: null | undefined | Key
-    name: String
+    title: String
     description: String | null
     photo: String | null
 }
 
 export default function Users() {
 
-    const { loading, error, data } = useQuery(GET_TODOS);
+    const [todos, setTodos] = useState<Array<Todo>>(new Array<Todo>());
 
-    if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
+    const [getData, { refetch }] = useLazyQuery(GET_TODOS);
 
 
-    return data.locations?.map(({ id, name, description, photo }: Location) => (
+    useEffect(() => {
+        getData().then(res => {
+            const data: Array<Todo> = res.data?.getTodos;
+            setTodos(data);
+        });
+    }, []);
+
+
+
+
+    return todos?.map(({ id, title, description, photo }) => (
         <div key={id}>
-            <h3>{name}</h3>
-            <img width="400" height="250" alt="location-reference" src={`${photo}`} />
+            <h3>{title}</h3>
             <br />
-            <b>About this location:</b>
+            <b>Description:</b>
             <p>{description}</p>
             <br />
+            <b>Image</b>
+            <br />
+            <img width="400" height="250" alt="location-reference" src={`${photo}`} />
         </div>
     ));
 }
