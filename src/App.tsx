@@ -1,4 +1,7 @@
 
+import { withAuthenticator } from '@aws-amplify/ui-react'
+import '@aws-amplify/ui-react/styles.css'
+
 import Users from "./components/Users"
 
 function App() {
@@ -11,4 +14,4 @@ function App() {
   )
 }
 
-export default App
+export default withAuthenticator(App)
