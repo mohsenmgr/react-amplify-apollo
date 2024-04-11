@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
 import { Auth } from 'aws-amplify';
 import { ApolloProvider } from '@apollo/client';
+import App from './App';
 
 import awsConfig from '../aws-exports';
 
