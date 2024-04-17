@@ -1,6 +1,9 @@
 import Routes from './routes/root';
 import { BrowserRouter, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, makeStyles } from '@material-ui/core';
+import { ContextObject } from './types';
+import { useContext } from 'react';
+import { UserContext } from './context';
 
 
 export default function Content() {
@@ -20,6 +23,22 @@ export default function Content() {
     }));
     const classes = useStyles();
 
+
+    const applicationContext: ContextObject = useContext<ContextObject>(UserContext);
+    console.log("***CONTENT.tsx*** INSIDE CONTENT applicationContext IS ", JSON.stringify(applicationContext));
+
+    const showLoginLogout = () => {
+
+        let component: JSX.Element;
+
+        component = !!applicationContext?.loggedIn ?
+            <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/logout">Logout</Link>
+            :
+            <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/login">Login</Link>;
+        return component;
+    };
+
+
     return (
         <>
             <div className={classes.root}>
@@ -29,7 +48,7 @@ export default function Content() {
                             <Typography variant="h6" className={classes.title}>
                                 Home - Welcome
                             </Typography>
-                            <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/login">Login</Link>
+                            {showLoginLogout()}
                         </Toolbar>
                     </AppBar>
                     <Routes />

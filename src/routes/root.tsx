@@ -5,8 +5,10 @@ import {
 
 import Users from '../components/Users';
 import Login from '../components/login';
-import { useEffect, useState } from 'react';
-import { Auth } from 'aws-amplify';
+import { ContextObject } from '../types';
+import { useContext } from 'react';
+import { UserContext } from '../context';
+
 
 
 export default function Root() {
@@ -21,30 +23,21 @@ export default function Root() {
     console.log(`firstParam ${firstParam} params ${params}`);
 
 
-    let [userInfo, setUserInfo] = useState({});
+    const userInfoCTX: ContextObject = useContext(UserContext);
+    console.log("***CONTENT.tsx*** INSIDE CONTENT userInfoCTX IS ", JSON.stringify(userInfoCTX));
 
 
-    useEffect(() => {
-
-        async function fetchUserInfo() {
-            const currentUserInfo = await Auth.currentUserInfo();
-            console.log('current user info', currentUserInfo);
-            setUserInfo(currentUserInfo);
-        }
-
-        fetchUserInfo();
-
-        // Auth.currentUserInfo().then((currentUserInfo): any => {
-        //     console.log(`current user info ${JSON.stringify(currentUserInfo)}`);    
-        // });
-    }, []);
 
     return (
         <>
             <RoutesDOM>
                 <Route path="/" element={<Users />} />
                 <Route path="/home" element={<Users />} />
-                <Route path='/login' element={<Login />} />
+                {
+                    !userInfoCTX?.loggedIn &&
+                    <Route path='/login' element={<Login />} />
+                }
+                <Route path='*' element={<Users />} />
                 {/* <Route path='platform'>
 
                 </Route> */}
