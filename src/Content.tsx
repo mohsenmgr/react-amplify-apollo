@@ -1,7 +1,7 @@
 import Routes from './routes/root';
 import { BrowserRouter, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, makeStyles } from '@material-ui/core';
-import { ContextObject } from './types';
+import { MyAppContext } from './types';
 import { useContext } from 'react';
 import { UserContext } from './context';
 
@@ -24,8 +24,8 @@ export default function Content() {
     const classes = useStyles();
 
 
-    const applicationContext: ContextObject = useContext<ContextObject>(UserContext);
-    console.log("***CONTENT.tsx*** INSIDE CONTENT applicationContext IS ", JSON.stringify(applicationContext));
+    const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
+    console.log("*** CONTENT.tsx *** applicationContext: ", JSON.stringify(applicationContext));
 
     const showLoginLogout = () => {
 

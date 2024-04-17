@@ -5,33 +5,35 @@ import { UserContext } from './context';
 import { useEffect, useState } from 'react';
 import { Auth } from 'aws-amplify';
 import Spinner from './components/spinner';
-import { ContextObject, User } from './types';
+import { MyAppContext, User } from './types';
 
 
 function App() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const setApplicationContext = (context: MyAppContext) => {
+    setAppContextState(context);
+  }
 
-  let myUser: User = new User();
-  let appContext: ContextObject = { user: myUser, loggedIn: false };
-  const [appContextState, setAppContextState] = useState<ContextObject>(appContext);
+  const appContext: MyAppContext = new MyAppContext();
+  const [appContextState, setAppContextState] = useState<MyAppContext>(appContext);
+  appContext.callback = setApplicationContext;
+
 
   useEffect(() => {
 
     async function fetchUserInfo() {
       const currentUserInfo = await Auth.currentUserInfo();
-      console.log('current user info', currentUserInfo);
+      console.log('*** APP.tsx *** currentUserInfo: ', currentUserInfo);
       return currentUserInfo;
     }
 
     fetchUserInfo().then((userInfo: User) => {
-      console.log("***APP.tsx*** INSIDE CONTENT USER INFO IS ", userInfo);
-
-      myUser = userInfo;
+      appContext.setUser(userInfo);
       const isLoggedIn = userInfo?.id ? true : false;
+      appContext.setLoggedIn(isLoggedIn);
       setIsLoading(false);
-      appContext = { user: myUser, loggedIn: isLoggedIn }
       setAppContextState(appContext);
     });
 

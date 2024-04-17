@@ -12,7 +12,7 @@ import { Alert } from '@material-ui/lab'
 import { Amplify, Auth } from 'aws-amplify';
 import awsExports from '../../aws-exports';
 import { useNavigate } from 'react-router-dom';
-import { ContextObject } from '../types';
+import { MyAppContext, User } from '../types'
 import { UserContext } from '../context';
 
 Amplify.configure(awsExports);
@@ -38,20 +38,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
 
-    //TODO: Update Context to hold a function for setting Context so I can direct setContext inside Login
-    // So when the usre logs in I call the setContext and update the isLoggedIn flag inside the context
-    // const applicationContext: ContextObject = useContext<ContextObject>(UserContext);
-
+    const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
 
     const navigate = useNavigate();
     const [errors, setErrors] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
-
-
-
-
-
 
     const classes = useStyles();
     const [email, setEmail] = useState('');
@@ -67,9 +58,8 @@ const Login = () => {
 
     const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
-        // Handle login logic here
-        const username = email;
 
+        const username = email;
         const signIn = async function () {
             return Auth.signIn({
                 username,
@@ -79,13 +69,18 @@ const Login = () => {
         };
 
         signIn().then((result) => {
-            console.log('result is : ' + JSON.stringify(result))
+            console.log('*** login *** result is : ' + JSON.stringify(result))
             setErrors(false);
 
-            // TODO: Calling the setContext Here
-            //applicationContext.loggedIn = true;
+            const context = new MyAppContext();
+            const user: User = new User();
+            user.setUser(result?.username, result?.username, result?.attributes);
+            context.setUser(user);
+            context.setLoggedIn(true);
 
-
+            // Call the main application Context with the updated information
+            // this callback calls setContext of the app, and update the isLoggedIn flag inside the context
+            applicationContext.callback(context);
             navigate('/home');
 
         }).catch((error) => { console.error(error); setErrors(true); setErrorMessage(error.code as string) });

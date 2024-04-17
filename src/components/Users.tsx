@@ -2,7 +2,9 @@ import { useLazyQuery } from '@apollo/client';
 
 
 import { GET_TODOS } from '../graphQL/queries'
-import { Key, useEffect, useState } from 'react';
+import { Key, useContext, useEffect, useState } from 'react';
+import { MyAppContext } from '../types';
+import { UserContext } from '../context';
 
 
 interface Todo {
@@ -13,6 +15,9 @@ interface Todo {
 }
 
 export default function Users() {
+
+    const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
+    console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
 
     const [todos, setTodos] = useState<Array<Todo>>(new Array<Todo>());
 
@@ -39,6 +44,7 @@ export default function Users() {
             <b>Image</b>
             <br />
             <img width="400" height="250" alt="location-reference" src={`${photo}`} />
+
         </div>
     ));
 }

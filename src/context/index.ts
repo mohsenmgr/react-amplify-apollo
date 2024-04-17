@@ -1,11 +1,4 @@
 import { createContext } from "react";
-import { ContextObject } from "../types";
+import { MyAppContext } from "../types";
 
-export const UserContext = createContext<ContextObject>({
-  user: {
-    id: "",
-    username: "",
-    attributes: {},
-  },
-  loggedIn: false,
-});
+export const UserContext = createContext<MyAppContext>(new MyAppContext());

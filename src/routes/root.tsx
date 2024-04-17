@@ -5,7 +5,7 @@ import {
 
 import Users from '../components/Users';
 import Login from '../components/login';
-import { ContextObject } from '../types';
+import { MyAppContext } from '../types'
 import { useContext } from 'react';
 import { UserContext } from '../context';
 
@@ -23,7 +23,7 @@ export default function Root() {
     console.log(`firstParam ${firstParam} params ${params}`);
 
 
-    const userInfoCTX: ContextObject = useContext(UserContext);
+    const userInfoCTX: MyAppContext = useContext(UserContext);
     console.log("***CONTENT.tsx*** INSIDE CONTENT userInfoCTX IS ", JSON.stringify(userInfoCTX));
 
 
