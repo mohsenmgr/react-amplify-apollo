@@ -77,6 +77,7 @@ const Login = () => {
             user.setUser(result?.username, result?.username, result?.attributes);
             context.setUser(user);
             context.setLoggedIn(true);
+            context.callback = applicationContext.callback;
 
             // Call the main application Context with the updated information
             // this callback calls setContext of the app, and update the isLoggedIn flag inside the context

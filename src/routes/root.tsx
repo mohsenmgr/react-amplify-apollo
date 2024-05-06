@@ -8,6 +8,7 @@ import Login from '../components/login';
 import { MyAppContext } from '../types'
 import { useContext } from 'react';
 import { UserContext } from '../context';
+import Logout from '../components/logout';
 
 
 
@@ -36,6 +37,10 @@ export default function Root() {
                 {
                     !userInfoCTX?.loggedIn &&
                     <Route path='/login' element={<Login />} />
+                }
+                {
+                    userInfoCTX?.loggedIn &&
+                    <Route path='/logout' element={<Logout />} />
                 }
                 <Route path='*' element={<Users />} />
                 {/* <Route path='platform'>

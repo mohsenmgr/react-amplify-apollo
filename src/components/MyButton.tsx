@@ -1,5 +1,14 @@
 import { Button } from '@material-ui/core';
 
-export default function MyButton() {
-    return <Button color="primary">Click Me</Button>;
+
+interface Props {
+    text: string,
+    onLogout: () => void
+}
+
+export default function MyButton(props: Props) {
+    const { text, onLogout } = props;
+
+
+    return <Button color="primary" variant="contained" disableElevation onClick={onLogout}>{text}</Button>;
 }
