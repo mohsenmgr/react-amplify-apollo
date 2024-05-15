@@ -9,6 +9,7 @@ import { MyAppContext } from '../types'
 import { useContext } from 'react';
 import { UserContext } from '../context';
 import Logout from '../components/logout';
+import CreateTodo from '../components/CreateTodo';
 
 
 
@@ -25,7 +26,7 @@ export default function Root() {
 
 
     const userInfoCTX: MyAppContext = useContext(UserContext);
-    console.log("***CONTENT.tsx*** INSIDE CONTENT userInfoCTX IS ", JSON.stringify(userInfoCTX));
+    //console.log("***CONTENT.tsx*** INSIDE CONTENT userInfoCTX IS ", JSON.stringify(userInfoCTX));
 
 
 
@@ -43,6 +44,10 @@ export default function Root() {
                     <Route path='/logout' element={<Logout />} />
                 }
                 <Route path='*' element={<Users />} />
+                {
+                    userInfoCTX?.loggedIn && <Route path='/createtodo' element={<CreateTodo />} />
+                }
+
                 {/* <Route path='platform'>
 
                 </Route> */}

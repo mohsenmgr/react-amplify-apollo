@@ -25,7 +25,7 @@ export default function Content() {
 
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
-    console.log("*** CONTENT.tsx *** applicationContext: ", JSON.stringify(applicationContext));
+    //console.log("*** CONTENT.tsx *** applicationContext: ", JSON.stringify(applicationContext));
 
     const showLoginLogout = () => {
 

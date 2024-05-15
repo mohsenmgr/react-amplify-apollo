@@ -1,38 +1,33 @@
 import { useLazyQuery } from '@apollo/client';
-
-
 import { GET_TODOS } from '../graphQL/queries'
 import { Key, useContext, useEffect, useState } from 'react';
 import { MyAppContext } from '../types';
 import { UserContext } from '../context';
-
-
-interface Todo {
-    id: null | undefined | Key
-    title: String
-    description: String | null
-    photo: String | null
-}
+import { Todo } from '../types/todo';
 
 export default function Users() {
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
-    console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
+    //console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
+    const userId = applicationContext.user.id;
 
     const [todos, setTodos] = useState<Array<Todo>>(new Array<Todo>());
 
     const [getData, { refetch }] = useLazyQuery(GET_TODOS);
+    const userItem = {
+        userId: userId
+    }
 
 
     useEffect(() => {
-        getData().then(res => {
+        getData({
+            variables: userItem
+        }).then(res => {
             const data: Array<Todo> = res.data?.getTodos;
+            console.log(data);
             setTodos(data);
         });
     }, []);
-
-
-
 
     return todos?.map(({ id, title, description, photo }) => (
         <div key={id}>
@@ -44,7 +39,6 @@ export default function Users() {
             <b>Image</b>
             <br />
             <img width="400" height="250" alt="location-reference" src={`${photo}`} />
-
         </div>
     ));
 }
