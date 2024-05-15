@@ -4,6 +4,8 @@ import { Key, useContext, useEffect, useState } from 'react';
 import { MyAppContext } from '../types';
 import { UserContext } from '../context';
 import { Todo } from '../types/todo';
+import MyCard from './MyCard';
+import { Grid } from '@mui/material';
 
 export default function Users() {
 
@@ -18,27 +20,34 @@ export default function Users() {
         userId: userId
     }
 
-
     useEffect(() => {
         getData({
             variables: userItem
         }).then(res => {
-            const data: Array<Todo> = res.data?.getTodos;
-            console.log(data);
-            setTodos(data);
+            const data: Todo[] | undefined = res.data?.getTodos;
+            const updatedData = data ? data?.map((a) => {
+                return {
+                    ...a,
+                    createdAt: new Date(a.createdAt as string).getTime()
+                }
+            }).sort((a, b) => {
+                return a.createdAt - b.createdAt
+            }) : [];
+            setTodos(updatedData);
         });
     }, []);
 
-    return todos?.map(({ id, title, description, photo }) => (
-        <div key={id}>
-            <h3>{title}</h3>
-            <br />
-            <b>Description:</b>
-            <p>{description}</p>
-            <br />
-            <b>Image</b>
-            <br />
-            <img width="400" height="250" alt="location-reference" src={`${photo}`} />
-        </div>
-    ));
+    return (
+        <>
+            <Grid container spacing={4} sx={{ mt: 0 }}>
+                {
+                    todos?.map(({ id, title, description, photo }) => (
+                        <Grid item xs={12} sm={6} md={2} key={id}>
+                            <MyCard id={id} title={title} description={description} photo={photo} />
+                        </Grid>
+                    ))
+                }
+            </Grid>
+        </>
+    )
 }
