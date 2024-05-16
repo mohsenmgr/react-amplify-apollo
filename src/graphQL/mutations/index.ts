@@ -5,6 +5,8 @@ export const MakeTodo = gql`
     $id: ID!
     $userId: String!
     $title: String!
+    $done: Boolean
+    $dueDate: AWSDateTime
     $description: String
     $photo: String
   ) {
@@ -12,6 +14,8 @@ export const MakeTodo = gql`
       id: $id
       userId: $userId
       title: $title
+      done: $done
+      dueDate: $dueDate
       description: $description
       photo: $photo
     ) {
@@ -20,6 +24,9 @@ export const MakeTodo = gql`
       title
       description
       photo
+      createdAt
+      done
+      dueDate
     }
   }
 `;

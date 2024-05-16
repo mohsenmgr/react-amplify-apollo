@@ -8,6 +8,8 @@ export const GET_TODOS = gql`
       title
       description
       photo
+      dueDate
+      done
       createdAt
       updatedAt
       owner

@@ -9,6 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { MyAppContext } from '../types';
 import { UserContext } from '../context';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Dayjs } from 'dayjs';
 
 
 
@@ -19,6 +21,7 @@ export default function MyForm() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('');
+    const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
 
     const [mkTodoMutation] = useMutation<Todo>(MakeTodo);
@@ -39,14 +42,20 @@ export default function MyForm() {
         setImage(event.target.value);
     };
 
+    const handleDateChange = (newDate: Dayjs | null) => {
+        setDueDate(newDate);
+    }
+
     const onSubmit = () => {
         // console.log(`title: ${title} , description: ${description} , image: ${image}`)
         const userId = applicationContext.user.id;
-        const todoItem: Todo = { id: uuidv4(), userId: userId, title: title, description: description, photo: image };
+        const awsDate = dueDate?.toDate();
+        const todoItem: Todo = { id: uuidv4(), userId: userId, title: title, description: description, photo: image, dueDate: awsDate, done: false };
 
         setTitle("");
         setDescription("");
         setImage("");
+        setDueDate(null);
 
         console.log(todoItem);
 
@@ -66,6 +75,10 @@ export default function MyForm() {
 
             <FormLabel>Todo image</FormLabel>
             <TextField type="text" variant='outlined' color='primary' value={image} onChange={handleImageChange} />
+
+            <FormLabel>&nbsp;</FormLabel>
+            <DatePicker label="Due Date" value={dueDate} onChange={handleDateChange} />
+
 
             <Button onClick={onSubmit}>Submit</Button>
         </FormControl>

@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { Auth } from 'aws-amplify';
 import Spinner from './components/spinner';
 import { MyAppContext, User } from './types';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 function App() {
@@ -42,9 +44,11 @@ function App() {
 
   if (!isLoading)
     return (
-      <UserContext.Provider value={appContextState}>
-        <Content />
-      </UserContext.Provider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <UserContext.Provider value={appContextState}>
+          <Content />
+        </UserContext.Provider>
+      </LocalizationProvider>
 
     );
   else {
