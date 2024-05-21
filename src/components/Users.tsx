@@ -7,17 +7,43 @@ import { Todo } from '../types/todo';
 import MyCard from './MyCard';
 import { Grid } from '@mui/material';
 
+
 export default function Users() {
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
     //console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
     const userId = applicationContext.user.id;
 
+    const [getData, { refetch }] = useLazyQuery(GET_TODOS);
     const [todos, setTodos] = useState<Array<Todo>>(new Array<Todo>());
 
-    const [getData, { refetch }] = useLazyQuery(GET_TODOS);
     const userItem = {
         userId: userId
+    }
+
+    const refreshData = async () => {
+        console.log("Refresh Data is called");
+        try {
+            const { data } = await refetch({
+                variables: userItem
+            });
+
+            const todos: Todo[] | undefined = data?.getTodos;
+            const updatedData = todos ? todos?.map((a) => {
+                return {
+                    ...a,
+                    createdAt: new Date(a.createdAt as string).getTime()
+                }
+            }).sort((a, b) => {
+                return a.createdAt - b.createdAt
+            }) : [];
+            setTodos(updatedData);
+
+        }
+        catch (error) {
+            console.error(error);
+            //throw new Error(error as string);
+        }
     }
 
     useEffect(() => {
@@ -43,7 +69,8 @@ export default function Users() {
                 {
                     todos?.map(({ id, title, description, photo, done, dueDate, createdAt }) => (
                         <Grid item xs={12} sm={6} md={2} key={id}>
-                            <MyCard id={id} title={title} description={description} photo={photo} done={done} dueDate={dueDate} createdAt={new Date(createdAt as string).toLocaleDateString('it-IT')} />
+                            <MyCard id={id} title={title} description={description} photo={photo} done={done} dueDate={dueDate}
+                                createdAt={new Date(createdAt as string).toLocaleDateString('it-IT')} onRefresh={refreshData} />
                         </Grid>
                     ))
                 }

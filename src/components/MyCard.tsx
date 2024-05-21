@@ -9,14 +9,21 @@ import { useMutation } from '@apollo/client';
 import { RemoveTodo, ModifyTodo } from '../graphQL/mutations';
 
 type TodoWithoutUserId = Omit<Todo, 'userId'>;
+type RefreshFunction = {
+    onRefresh: () => Promise<void>
+}
+type MyCardPropType = TodoWithoutUserId & RefreshFunction;
+
+
 type TodoModified = Partial<Todo>;
 
 
-export default function MyCard(props: TodoWithoutUserId) {
+export default function MyCard(props: MyCardPropType) {
 
     const [isChecked, setIsChecked] = useState(props.done);
     const [modifyTodoMutation] = useMutation<TodoModified>(ModifyTodo);
     const [deleteTodoMutation] = useMutation<{ id: string }>(RemoveTodo);
+    const refreshFunction = props.onRefresh;
 
 
 
@@ -24,11 +31,12 @@ export default function MyCard(props: TodoWithoutUserId) {
         const checked = event.target.checked;
         setIsChecked(checked);
         console.log(checked);
-        modifyTodoMutation({ variables: { id: props.id, done: checked } }).then((data: any) => console.log(data)).catch((error) => console.error(error));
+        modifyTodoMutation({ variables: { id: props.id, done: checked } }).then((res: any) => console.log(res.data.modifyTodo)).catch((error) => console.error(error));
     };
 
-    const handleDeleteClick = () => {
-        deleteTodoMutation({ variables: { id: props.id } }).then((data: any) => console.log(data.removeTodo)).catch((error) => console.error(error));
+    const handleDeleteClick = async () => {
+        await deleteTodoMutation({ variables: { id: props.id } }).then((res: any) => console.log(res.data.removeTodo)).catch((error) => console.error(error));
+        await refreshFunction();
     }
 
     return (
@@ -63,7 +71,7 @@ export default function MyCard(props: TodoWithoutUserId) {
                     />
                 }
                 label="Done" />
-            <Button variant="text" color="error" onClick={handleDeleteClick}>
+            <Button variant="text" color="error" onClick={() => handleDeleteClick()}>
                 Delete
             </Button>
 
