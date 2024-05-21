@@ -30,3 +30,36 @@ export const MakeTodo = gql`
     }
   }
 `;
+
+export const ModifyTodo = gql`
+  mutation modifyTodo(
+    $id: ID!
+    $title: String
+    $done: Boolean
+    $dueDate: AWSDateTime
+    $description: String
+    $photo: String
+  ) {
+    modifyTodo(
+      id: $id
+      title: $title
+      done: $done
+      dueDate: $dueDate
+      description: $description
+      photo: $photo
+    ) {
+      id
+      title
+      done
+      description
+      dueDate
+      createdAt
+    }
+  }
+`;
+
+export const RemoveTodo = gql`
+  mutation removeTodo($id: ID!) {
+    removeTodo(id: $id)
+  }
+`;

@@ -46,8 +46,12 @@ export default function Content() {
                     <AppBar position="static">
                         <Toolbar>
                             <Typography variant="h6" className={classes.title}>
-                                Home - Welcome
+                                <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/home">Home - Welcome</Link>
                             </Typography>
+                            <Typography variant="h6" className={classes.title}>
+                                <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/createtodo">Create Todo</Link>
+                            </Typography>
+
                             {showLoginLogout()}
                         </Toolbar>
                     </AppBar>

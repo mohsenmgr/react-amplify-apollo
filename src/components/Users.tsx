@@ -41,9 +41,9 @@ export default function Users() {
         <>
             <Grid container spacing={4} sx={{ mt: 0 }}>
                 {
-                    todos?.map(({ id, title, description, photo }) => (
+                    todos?.map(({ id, title, description, photo, done, dueDate, createdAt }) => (
                         <Grid item xs={12} sm={6} md={2} key={id}>
-                            <MyCard id={id} title={title} description={description} photo={photo} />
+                            <MyCard id={id} title={title} description={description} photo={photo} done={done} dueDate={dueDate} createdAt={new Date(createdAt as string).toLocaleDateString('it-IT')} />
                         </Grid>
                     ))
                 }
