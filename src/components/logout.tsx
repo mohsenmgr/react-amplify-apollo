@@ -18,7 +18,7 @@ export default function Logout() {
 
                 const context = new MyAppContext();
                 const user: User = new User();
-                user.setUser(undefined, undefined, undefined);
+                user.setUser("", undefined);
                 context.setUser(user);
                 context.setLoggedIn(false);
                 context.callback = applicationContext.callback;

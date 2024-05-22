@@ -2,15 +2,19 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_TODOS } from '../graphQL/queries'
 import { Key, useContext, useEffect, useState } from 'react';
 import { MyAppContext } from '../types';
-import { UserContext } from '../context';
+import { MyTodoContext, UserContext } from '../context';
 import { Todo } from '../types/todo';
 import MyCard from './MyCard';
 import { Grid } from '@mui/material';
+import { TodoContext } from '../types/todocontext';
 
 
 export default function Users() {
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
+    const myTodoContext: TodoContext = useContext<TodoContext>(MyTodoContext);
+
+
     //console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
     const username = applicationContext.user.username;
 
@@ -39,14 +43,20 @@ export default function Users() {
             }) : [];
             setTodos(updatedData);
 
+            return "success";
+
         }
         catch (error) {
             console.error(error);
             //throw new Error(error as string);
+            return "fail";
         }
     }
 
+    myTodoContext.refreshTodo = refreshData;
+
     useEffect(() => {
+        console.log("use effect is called");
         getData({
             variables: userItem
         }).then(res => {

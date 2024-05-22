@@ -10,7 +10,7 @@ import { RemoveTodo, ModifyTodo } from '../graphQL/mutations';
 
 type TodoWithoutUserId = Omit<Todo, 'userId'>;
 type RefreshFunction = {
-    onRefresh: () => Promise<void>
+    onRefresh: () => Promise<string>
 }
 type MyCardPropType = TodoWithoutUserId & RefreshFunction;
 

@@ -8,9 +8,11 @@ import { MakeTodo } from '../graphQL/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { MyAppContext } from '../types';
-import { UserContext } from '../context';
+import { MyTodoContext, UserContext } from '../context';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { TodoContext } from '../types/todocontext';
 
 
 
@@ -25,9 +27,14 @@ export default function MyForm() {
 
 
     const [mkTodoMutation] = useMutation<Todo>(MakeTodo);
+    const navigate = useNavigate();
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
-    console.log("*** MyForm.tsx *** applicationContext: ", JSON.stringify(applicationContext));
+    //console.log("*** MyForm.tsx *** applicationContext: ", JSON.stringify(applicationContext));
+
+    const myTodoContext: TodoContext = useContext<TodoContext>(MyTodoContext);
+    console.log("*** MyForm.tsx *** Todo Context is: ", JSON.stringify(myTodoContext));
+
 
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,11 +53,11 @@ export default function MyForm() {
         setDueDate(newDate);
     }
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         // console.log(`title: ${title} , description: ${description} , image: ${image}`)
-        const userId = applicationContext.user.id;
+        const username = applicationContext.user.username;
         const awsDate = dueDate?.toDate();
-        const todoItem: Todo = { id: uuidv4(), userId: userId, title: title, description: description, photo: image, dueDate: awsDate, done: false };
+        const todoItem: Todo = { id: uuidv4(), userId: username, title: title, description: description, photo: image, dueDate: awsDate, done: false };
 
         setTitle("");
         setDescription("");
@@ -59,7 +66,19 @@ export default function MyForm() {
 
         console.log(todoItem);
 
-        mkTodoMutation({ variables: todoItem }).then((data) => console.log(data)).catch((error) => console.error(error));
+        try {
+            const data = await mkTodoMutation({ variables: todoItem });
+            console.log(data);
+            const res = await myTodoContext.refreshTodo();
+            console.log(`Promise has returned ${res}`);
+
+        }
+        catch (error) {
+            console.error(error);
+            throw new Error(error as string);
+        }
+
+        navigate("/home")
 
         // console.log(todoItem);
     }
