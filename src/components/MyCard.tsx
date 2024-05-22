@@ -2,11 +2,15 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions, Checkbox, Chip, FormControlLabel } from '@mui/material';
+import { Button, CardActionArea, Checkbox, FormControlLabel } from '@mui/material';
 import { Todo } from '../types/todo';
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { RemoveTodo, ModifyTodo } from '../graphQL/mutations';
+import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { editType } from '../types/editable';
+
 
 type TodoWithoutUserId = Omit<Todo, 'userId'>;
 type RefreshFunction = {
@@ -24,6 +28,7 @@ export default function MyCard(props: MyCardPropType) {
     const [modifyTodoMutation] = useMutation<TodoModified>(ModifyTodo);
     const [deleteTodoMutation] = useMutation<{ id: string }>(RemoveTodo);
     const refreshFunction = props.onRefresh;
+    const navigate = useNavigate();
 
 
 
@@ -39,8 +44,22 @@ export default function MyCard(props: MyCardPropType) {
         await refreshFunction();
     }
 
+    const handleCardClick = () => {
+        const state: Omit<Todo, "userId"> & editType = {
+            id: props.id,
+            title: props.title,
+            description: props.description,
+            done: props.done,
+            photo: props.photo,
+            dueDate: props.dueDate,
+            edit: true
+        }
+        navigate("/createtodo", { state: state })
+
+    }
+
     return (
-        <Card style={{ opacity: isChecked ? 0.5 : 1 }}>
+        <Card onClick={() => handleCardClick()} style={{ opacity: isChecked ? 0.5 : 1 }}>
             <CardActionArea>
                 <CardMedia
                     component="img"
@@ -57,7 +76,7 @@ export default function MyCard(props: MyCardPropType) {
                     </Typography>
                     <br />
                     <Typography variant="body1" color="text.secondary">
-                        {props.createdAt as string}
+                        {dayjs(props.dueDate).format("YYYY-MM-DD hh:mm").toString()}
                     </Typography>
                 </CardContent>
             </CardActionArea>

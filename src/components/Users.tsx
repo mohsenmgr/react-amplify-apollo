@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_TODOS } from '../graphQL/queries'
-import { Key, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { MyAppContext } from '../types';
 import { MyTodoContext, UserContext } from '../context';
 import { Todo } from '../types/todo';

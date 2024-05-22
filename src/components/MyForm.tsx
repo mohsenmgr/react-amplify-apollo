@@ -4,38 +4,33 @@ import { FormControl, FormLabel } from '@mui/material';
 import { useContext, useState } from 'react';
 import { Todo } from '../types/todo';
 import { MakeTodo } from '../graphQL/mutations';
-
 import { v4 as uuidv4 } from 'uuid';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { MyAppContext } from '../types';
-import { MyTodoContext, UserContext } from '../context';
+import { useMutation } from '@apollo/client';
+import { MyTodoContext } from '../context';
 import { DatePicker } from '@mui/x-date-pickers';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { TodoContext } from '../types/todocontext';
+import { editType } from '../types/editable';
 
 
 
+type FormProps = Todo & editType;
 
+export default function MyForm(props: FormProps) {
 
-export default function MyForm() {
-
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [image, setImage] = useState('');
-    const [dueDate, setDueDate] = useState<Dayjs | null>(null);
-
+    const [title, setTitle] = useState(props.title);
+    const [description, setDescription] = useState(props.description);
+    const [image, setImage] = useState(props.photo);
+    const [dueDate, setDueDate] = useState<dayjs.Dayjs | undefined>(dayjs(props.dueDate));
+    const username = props.userId;
 
     const [mkTodoMutation] = useMutation<Todo>(MakeTodo);
     const navigate = useNavigate();
 
-    const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
     //console.log("*** MyForm.tsx *** applicationContext: ", JSON.stringify(applicationContext));
 
     const myTodoContext: TodoContext = useContext<TodoContext>(MyTodoContext);
-    console.log("*** MyForm.tsx *** Todo Context is: ", JSON.stringify(myTodoContext));
-
-
 
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
@@ -49,22 +44,18 @@ export default function MyForm() {
         setImage(event.target.value);
     };
 
-    const handleDateChange = (newDate: Dayjs | null) => {
-        setDueDate(newDate);
+    const handleDateChange = (newDate: dayjs.Dayjs | undefined | null) => {
+        newDate ? setDueDate(newDate) : setDueDate(undefined)
     }
 
     const onSubmit = async () => {
-        // console.log(`title: ${title} , description: ${description} , image: ${image}`)
-        const username = applicationContext.user.username;
-        const awsDate = dueDate?.toDate();
+        const awsDate = dueDate ? dueDate.toDate().toString() : ""
         const todoItem: Todo = { id: uuidv4(), userId: username, title: title, description: description, photo: image, dueDate: awsDate, done: false };
 
         setTitle("");
         setDescription("");
         setImage("");
-        setDueDate(null);
-
-        console.log(todoItem);
+        setDueDate(undefined);
 
         try {
             const data = await mkTodoMutation({ variables: todoItem });
@@ -77,12 +68,8 @@ export default function MyForm() {
             console.error(error);
             throw new Error(error as string);
         }
-
         navigate("/home")
-
-        // console.log(todoItem);
     }
-
 
     return (
         <FormControl>
@@ -97,7 +84,6 @@ export default function MyForm() {
 
             <FormLabel>&nbsp;</FormLabel>
             <DatePicker label="Due Date" value={dueDate} onChange={handleDateChange} />
-
 
             <Button onClick={onSubmit}>Submit</Button>
         </FormControl>

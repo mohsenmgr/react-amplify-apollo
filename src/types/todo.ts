@@ -1,10 +1,12 @@
+import dayjs from "dayjs";
+
 interface Todo {
   id: string;
   userId: string;
   title: string;
   description: string;
   photo?: string;
-  dueDate?: Date;
+  dueDate?: dayjs.Dayjs | undefined | string;
   done: boolean;
   createdAt?: String | Date | Number;
 }

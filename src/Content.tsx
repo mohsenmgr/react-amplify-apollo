@@ -4,6 +4,8 @@ import { AppBar, Toolbar, Typography, makeStyles } from '@material-ui/core';
 import { MyAppContext } from './types';
 import { useContext } from 'react';
 import { UserContext } from './context';
+import { Todo } from './types/todo';
+import { editType } from './types/editable';
 
 
 export default function Content() {
@@ -38,6 +40,15 @@ export default function Content() {
         return component;
     };
 
+    const state: Omit<Todo, "userId"> & editType = {
+        id: "",
+        title: "",
+        description: "",
+        done: false,
+        photo: "",
+        dueDate: undefined,
+        edit: false
+    }
 
     return (
         <>
@@ -49,7 +60,7 @@ export default function Content() {
                                 <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/home">Home - Welcome</Link>
                             </Typography>
                             <Typography variant="h6" className={classes.title}>
-                                <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/createtodo">Create Todo</Link>
+                                <Link style={{ textDecoration: 'none', color: 'inherit' }} to="/createtodo" state={state}>Create Todo</Link>
                             </Typography>
 
                             {showLoginLogout()}
