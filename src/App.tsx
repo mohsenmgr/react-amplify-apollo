@@ -33,7 +33,7 @@ function App() {
 
     fetchUserInfo().then((userInfo: User) => {
       appContext.setUser(userInfo);
-      const isLoggedIn = userInfo?.id ? true : false;
+      const isLoggedIn = userInfo?.username ? true : false;
       appContext.setLoggedIn(isLoggedIn);
       setIsLoading(false);
       setAppContextState(appContext);

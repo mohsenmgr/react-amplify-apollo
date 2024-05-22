@@ -74,7 +74,7 @@ const Login = () => {
 
             const context = new MyAppContext();
             const user: User = new User();
-            user.setUser(result?.username, result?.username, result?.attributes);
+            user.setUser(result?.username, result?.attributes);
             context.setUser(user);
             context.setLoggedIn(true);
             context.callback = applicationContext.callback;

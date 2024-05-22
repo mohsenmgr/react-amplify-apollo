@@ -21,18 +21,15 @@ class MyAppContext {
 }
 
 class User {
-  id: string;
   username: string;
   attributes: Object | undefined;
 
   constructor() {
-    this.id = "";
     this.username = "";
-    this.attributes = "";
+    this.attributes = undefined;
   }
 
-  setUser(id: string, username: string, attributes: Object | undefined) {
-    this.id = id;
+  setUser(username: string, attributes: Object | undefined) {
     this.username = username;
     this.attributes = attributes;
   }

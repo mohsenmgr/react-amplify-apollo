@@ -12,13 +12,13 @@ export default function Users() {
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
     //console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
-    const userId = applicationContext.user.id;
+    const username = applicationContext.user.username;
 
     const [getData, { refetch }] = useLazyQuery(GET_TODOS);
     const [todos, setTodos] = useState<Array<Todo>>(new Array<Todo>());
 
     const userItem = {
-        userId: userId
+        userId: username
     }
 
     const refreshData = async () => {
