@@ -1,5 +1,12 @@
+
 export default function Spinner() {
 
 
-    return <h1>Spinning</h1>;
+    return (
+        <div className="spinner-container">
+            <div className="spinner outer"></div>
+            <div className="spinner inner"></div>
+        </div>
+    );
+
 }

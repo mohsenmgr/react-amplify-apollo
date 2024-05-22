@@ -49,7 +49,6 @@ function App() {
           <Content />
         </UserContext.Provider>
       </LocalizationProvider>
-
     );
   else {
     return <Spinner />

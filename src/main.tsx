@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import './index.css'
+import './App.css'
 import { Auth } from 'aws-amplify';
 import { ApolloProvider } from '@apollo/client';
 import App from './App';
@@ -14,7 +14,9 @@ client.then(clientResponse => {
   const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
   root.render(
     <ApolloProvider client={clientResponse}>
-      <App />
+      <div className='App'>
+        <App />
+      </div>
     </ApolloProvider>
   );
 });

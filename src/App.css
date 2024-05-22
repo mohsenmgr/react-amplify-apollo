@@ -1,7 +1,6 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0rem;
   text-align: center;
 }
 
@@ -39,4 +38,48 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.App{
+  font-family: sans-serif;
+    text-align: left;
+    padding: 0px;
+}
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* Ensure the container takes up full viewport height */
+}
+
+.spinner {
+  position: absolute;
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.outer {
+  width: 80px;
+  height: 80px;
+  border-top: 8px solid #333;
+}
+
+.inner {
+  width: 40px;
+  height: 40px;
+  border-top: 8px solid #555;
+  animation-delay: 0.5s;
+  /* Delay for inner spinner */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
