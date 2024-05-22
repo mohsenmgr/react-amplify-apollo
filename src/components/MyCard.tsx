@@ -59,8 +59,8 @@ export default function MyCard(props: MyCardPropType) {
     }
 
     return (
-        <Card onClick={() => handleCardClick()} style={{ opacity: isChecked ? 0.5 : 1 }}>
-            <CardActionArea>
+        <Card style={{ opacity: isChecked ? 0.5 : 1 }}>
+            <CardActionArea onClick={() => handleCardClick()}>
                 <CardMedia
                     component="img"
                     height="140"

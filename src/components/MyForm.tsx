@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { FormControl, FormLabel } from '@mui/material';
 import { useContext, useState } from 'react';
 import { Todo } from '../types/todo';
-import { MakeTodo } from '../graphQL/mutations';
+import { MakeTodo, ModifyTodo } from '../graphQL/mutations';
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation } from '@apollo/client';
 import { MyTodoContext } from '../context';
@@ -19,6 +19,8 @@ type FormProps = Todo & editType;
 
 export default function MyForm(props: FormProps) {
 
+    const editOperation = props.edit;
+    const todoId = props.id;
     const [title, setTitle] = useState(props.title);
     const [description, setDescription] = useState(props.description);
     const [image, setImage] = useState(props.photo);
@@ -26,6 +28,7 @@ export default function MyForm(props: FormProps) {
     const username = props.userId;
 
     const [mkTodoMutation] = useMutation<Todo>(MakeTodo);
+    const [modifyTodoMutation] = useMutation<Omit<Todo, "userId">>(ModifyTodo);
     const navigate = useNavigate();
 
     //console.log("*** MyForm.tsx *** applicationContext: ", JSON.stringify(applicationContext));
@@ -49,25 +52,30 @@ export default function MyForm(props: FormProps) {
     }
 
     const onSubmit = async () => {
-        const awsDate = dueDate ? dueDate.toDate().toString() : ""
-        const todoItem: Todo = { id: uuidv4(), userId: username, title: title, description: description, photo: image, dueDate: awsDate, done: false };
+        const awsDate = dueDate ? dueDate.toDate().toISOString() : ""
+
+        try {
+            if (editOperation) {
+                const editTodoItem: Omit<Todo, "userId"> = { id: todoId, title: title, description: description, photo: image, dueDate: awsDate, done: false };
+                await modifyTodoMutation({ variables: editTodoItem });
+            }
+            else {
+                const todoItem: Todo = { id: uuidv4(), userId: username, title: title, description: description, photo: image, dueDate: awsDate, done: false };
+                await mkTodoMutation({ variables: todoItem });
+            }
+
+            await myTodoContext.refreshTodo();
+        }
+        catch (error) {
+            console.error(error);
+            throw new Error(error as string);
+        }
 
         setTitle("");
         setDescription("");
         setImage("");
         setDueDate(undefined);
 
-        try {
-            const data = await mkTodoMutation({ variables: todoItem });
-            console.log(data);
-            const res = await myTodoContext.refreshTodo();
-            console.log(`Promise has returned ${res}`);
-
-        }
-        catch (error) {
-            console.error(error);
-            throw new Error(error as string);
-        }
         navigate("/home")
     }
 
