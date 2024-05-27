@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { TodoContext } from '../types/todocontext';
 import { editType } from '../types/editable';
+import Spinner from './spinner';
 
 
 
@@ -30,6 +31,7 @@ export default function MyForm(props: FormProps) {
     const [mkTodoMutation] = useMutation<Todo>(MakeTodo);
     const [modifyTodoMutation] = useMutation<Omit<Todo, "userId">>(ModifyTodo);
     const navigate = useNavigate();
+    const [waiting, setWaiting] = useState(false);
 
     //console.log("*** MyForm.tsx *** applicationContext: ", JSON.stringify(applicationContext));
 
@@ -63,8 +65,9 @@ export default function MyForm(props: FormProps) {
                 const todoItem: Todo = { id: uuidv4(), userId: username, title: title, description: description, photo: image, dueDate: awsDate, done: false };
                 await mkTodoMutation({ variables: todoItem });
             }
-
+            setWaiting(true);
             await myTodoContext.refreshTodo();
+            setWaiting(false);
         }
         catch (error) {
             console.error(error);
@@ -79,21 +82,24 @@ export default function MyForm(props: FormProps) {
         navigate("/home")
     }
 
-    return (
-        <FormControl>
-            <FormLabel>Todo title</FormLabel>
-            <TextField type="text" variant='outlined' color='primary' value={title} onChange={handleTitleChange} />
+    if (!waiting)
+        return (
+            <FormControl>
+                <FormLabel>Todo title</FormLabel>
+                <TextField type="text" variant='outlined' color='primary' value={title} onChange={handleTitleChange} />
 
-            <FormLabel>Todo description</FormLabel>
-            <TextField type="text" variant='outlined' color='primary' value={description} onChange={handleDescriptionChange} />
+                <FormLabel>Todo description</FormLabel>
+                <TextField type="text" variant='outlined' color='primary' value={description} onChange={handleDescriptionChange} />
 
-            <FormLabel>Todo image</FormLabel>
-            <TextField type="text" variant='outlined' color='primary' value={image} onChange={handleImageChange} />
+                <FormLabel>Todo image</FormLabel>
+                <TextField type="text" variant='outlined' color='primary' value={image} onChange={handleImageChange} />
 
-            <FormLabel>&nbsp;</FormLabel>
-            <DatePicker label="Due Date" value={dueDate} onChange={handleDateChange} />
+                <FormLabel>&nbsp;</FormLabel>
+                <DatePicker label="Due Date" value={dueDate} onChange={handleDateChange} />
 
-            <Button onClick={onSubmit}>Submit</Button>
-        </FormControl>
-    )
+                <Button onClick={onSubmit}>Submit</Button>
+            </FormControl>
+        )
+    else
+        return <Spinner />
 }

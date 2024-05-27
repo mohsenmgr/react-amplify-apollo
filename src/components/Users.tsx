@@ -7,13 +7,14 @@ import { Todo } from '../types/todo';
 import MyCard from './MyCard';
 import { Grid } from '@mui/material';
 import { TodoContext } from '../types/todocontext';
+import Spinner from './spinner';
 
 
 export default function Users() {
 
     const applicationContext: MyAppContext = useContext<MyAppContext>(UserContext);
     const myTodoContext: TodoContext = useContext<TodoContext>(MyTodoContext);
-
+    const [waiting, setWaiting] = useState(false);
 
     //console.log(`++++++ applicationContext for Users ++++++ ${JSON.stringify(applicationContext)}`);
     const username = applicationContext.user.username;
@@ -26,6 +27,7 @@ export default function Users() {
     }
 
     const refreshData = async () => {
+        setWaiting(true);
         console.log("Refresh Data is called");
         try {
             const { data } = await refetch({
@@ -42,7 +44,7 @@ export default function Users() {
                 return a.createdAt - b.createdAt
             }) : [];
             setTodos(updatedData);
-
+            setWaiting(false);
             return "success";
 
         }
@@ -85,6 +87,8 @@ export default function Users() {
                     ))
                 }
             </Grid>
+            {waiting ? <Spinner /> : <></>}
+
         </>
     )
 }
